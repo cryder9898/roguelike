@@ -7,7 +7,7 @@ class RogueLike extends Component {
     super(props);
 
     this.state = {
-
+      board: []
     }
   }
 
@@ -22,7 +22,8 @@ class RogueLike extends Component {
           nxtLvl={100}
           dungeon={1}
         />
-        <MapView />
+        <MapView
+          gameMap={this.state.gameMap}/>
       </div>
     );
   }
