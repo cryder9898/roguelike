@@ -1,11 +1,8 @@
-$cell-size: .6em;
-
-.row {
-  height: $cell-size;
-}
+$cell-size: 12px;
 
 .tile {
-  display: inline-block;
+  display: inline-flex;
+  flex-wrap: wrap;
   height: $cell-size;
   width: $cell-size;
   border-style: solid;
