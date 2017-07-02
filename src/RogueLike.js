@@ -6,26 +6,24 @@ import MapGen from './MapGen';
 class RogueLike extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      gameMap: []
-    }
-    this.cols = 100;
-    this.rows = 100;
-    this.player = {x: 0, y: 0};
+    this.cols = 80;
+    this.rows = 80;
     this.tSize = 12;
+    this.state = {
+      gameMap: MapGen.createMap(this.rows, this.cols),
+      player: {x: 10, y: 10}
+    }
   }
 
   initGameMap = () => {
-    let gameMap = MapGen.createMap(this.cols, this.rows);
+    let gameMap = this.state.gameMap;
     let foundPosition = false;
     while (!foundPosition) {
-      let x = Math.floor(Math.random() * this.cols);
-      let y = Math.floor(Math.random() * this.rows);
-      if (gameMap[x][y] === 1) {
-        gameMap[x][y] = 'player';
-        this.player = {x: x, y: y};
-        console.log(this.player);
+      let x = Math.floor(Math.random() * this.rows);
+      let y = Math.floor(Math.random() * this.cols);
+      if (gameMap[y][x] === 1) {
+        gameMap[y][x] = 'player';
+        this.updatePlayer(x, y);
         foundPosition = true;
       }
     }
@@ -34,6 +32,11 @@ class RogueLike extends Component {
 
   updateGameMap = (gameMap) => {
     this.setState({gameMap: gameMap});
+  }
+
+  updatePlayer = (x, y) => {
+    let player = {x: x, y: y};
+    this.setState({player: player});
   }
 
   componentDidMount() {
@@ -49,41 +52,39 @@ class RogueLike extends Component {
 
     // checking if the new move is a wall or not
     let gameMap = this.state.gameMap;
-    let px = this.player.x;
-    let py = this.player.y;
-    console.log('prevMove: ['+px+','+py+']');
-    console.log('nextMove: ['+x+','+y+']');
-    if (gameMap[x][y] === 1) {
+    let px = this.state.player.x;
+    let py = this.state.player.y;
+    if (gameMap[y][x] === 1) {
 
       // removes player from present position
-      gameMap[px][py] = 1;
+      gameMap[py][px] = 1;
       //adds player to new x,y player position
-      gameMap[x][y] = 'player';
-      this.player = {x, y};
+      gameMap[y][x] = 'player';
+      this.updatePlayer(x, y);
       this.updateGameMap(gameMap);
     }
   }
 
   handleKeyDown = (event) => {
     event.stopPropagation();
-    let px = this.player.x;
-    let py = this.player.y;
+    let px = this.state.player.x;
+    let py = this.state.player.y;
     switch(event.key) {
       case 'ArrowUp':
       case 'w':
-        this.movePlayer(px - 1, py);
+        this.movePlayer(px, py - 1);
         break;
       case 'ArrowDown':
       case 's':
-        this.movePlayer(px + 1, py);
+        this.movePlayer(px, py + 1);
         break;
       case 'ArrowLeft':
       case 'a':
-        this.movePlayer(px, py - 1);
+        this.movePlayer(px - 1, py);
         break;
       case 'ArrowRight':
       case 'd':
-        this.movePlayer(px, py + 1);
+        this.movePlayer(px + 1, py);
         break;
       default:
     }
@@ -102,8 +103,7 @@ class RogueLike extends Component {
         />
         <MapView
           gameMap={this.state.gameMap}
-          rows={this.rows}
-          cols={this.cols}
+          player={this.state.player}
           tSize={this.tSize}
         />
       </div>

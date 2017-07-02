@@ -6,8 +6,8 @@
 
 module.exports = {
   createMap: function (
-      width = 100,
-      height = 100,
+      width = 80,
+      height = 80,
       maxRoomSize = 20,
       minRoomSize = 6,
       maxHallLength = 5,
