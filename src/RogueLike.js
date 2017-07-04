@@ -11,23 +11,50 @@ class RogueLike extends Component {
     this.tSize = 12;
     this.state = {
       gameMap: MapGen.createMap(this.rows, this.cols),
-      player: {x: 10, y: 10}
+      player: {x: 10, y: 10},
+      health: 100,
+      attack: 10,
+      weapon: 'stick',
+      level: 1
     }
   }
 
   initGameMap = () => {
     let gameMap = this.state.gameMap;
-    let foundPosition = false;
-    while (!foundPosition) {
-      let x = Math.floor(Math.random() * this.rows);
-      let y = Math.floor(Math.random() * this.cols);
-      if (gameMap[y][x] === 1) {
-        gameMap[y][x] = 'player';
-        this.updatePlayer(x, y);
-        foundPosition = true;
+
+    // sets a tile type in a random location on the floor
+    const setPiece = (type) => {
+      let foundPosition = false;
+      while (!foundPosition) {
+        let x = Math.floor((Math.random() * this.rows - 1) + 1);
+        let y = Math.floor((Math.random() * this.cols - 1) + 1);
+
+        // check if position is the floor and set correct x,y coords
+        if (gameMap[y][x] === 1) {
+          gameMap[y][x] = type;
+
+          // update player location
+          if (type === 'player') {
+            this.updatePlayer(x, y);
+          }
+
+          this.updateGameMap(gameMap);
+          foundPosition = true;
+        }
       }
     }
-    this.updateGameMap(gameMap);
+
+    setPiece('player');
+
+    for (let x = 0; x <= 10; x++) {
+      // enemy
+      setPiece(2);
+      // health
+      setPiece(3);
+      // weapon
+      setPiece(4);
+    }
+
   }
 
   updateGameMap = (gameMap) => {
@@ -49,19 +76,32 @@ class RogueLike extends Component {
   }
 
   movePlayer = (x, y) => {
-
-    // checking if the new move is a wall or not
     let gameMap = this.state.gameMap;
     let px = this.state.player.x;
     let py = this.state.player.y;
-    if (gameMap[y][x] === 1) {
 
-      // removes player from present position
-      gameMap[py][px] = 1;
-      //adds player to new x,y player position
-      gameMap[y][x] = 'player';
-      this.updatePlayer(x, y);
-      this.updateGameMap(gameMap);
+    switch (gameMap[y][x]) {
+      // next move is a wall
+      case 1:
+        // removes player from present position
+        gameMap[py][px] = 1;
+        //adds player to new x,y player position
+        gameMap[y][x] = 'player';
+        this.updatePlayer(x, y);
+        this.updateGameMap(gameMap);
+        break;
+      // next move is enemy
+      case 2:
+        console.log('hit enemy');
+        break;
+      case 3:
+        console.log('hit health');
+        break;
+      case 4:
+        console.log('hit weapon');
+        break;
+      default: break;
+
     }
   }
 
@@ -94,10 +134,10 @@ class RogueLike extends Component {
     return (
       <div>
         <TopPanel
-          health={100}
-          weapon={'stick'}
-          attack={10}
-          level={1}
+          health={this.state.health}
+          weapon={this.state.weapon}
+          attack={this.state.attack}
+          level={this.state.level}
           nxtLvl={100}
           dungeon={1}
         />

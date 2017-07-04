@@ -9,7 +9,7 @@ $cell-size: 10px;
 
 .player {
   @extend .tile;
-  background-color: red;
+  background-color: blue;
 }
 
 .wall {
@@ -20,4 +20,19 @@ $cell-size: 10px;
 .floor {
   @extend .tile;
   background-color: white;
+}
+
+.enemy {
+  @extend .tile;
+  background-color: red;
+}
+
+.health {
+  @extend .tile;
+  background-color: green;
+}
+
+.weapon {
+  @extend .tile;
+  background-color: orange;
 }
