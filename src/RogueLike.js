@@ -35,10 +35,10 @@ class RogueLike extends Component {
 
           // update player location
           if (type === 'player') {
-            this.updatePlayer(x, y);
+            let player = {x: x, y: y};
+            this.setState({player: player});
           }
-
-          this.updateGameMap(gameMap);
+          this.setState({gameMap: gameMap});
           foundPosition = true;
         }
       }
@@ -55,15 +55,6 @@ class RogueLike extends Component {
       setPiece(4);
     }
 
-  }
-
-  updateGameMap = (gameMap) => {
-    this.setState({gameMap: gameMap});
-  }
-
-  updatePlayer = (x, y) => {
-    let player = {x: x, y: y};
-    this.setState({player: player});
   }
 
   componentDidMount() {
@@ -87,8 +78,8 @@ class RogueLike extends Component {
         gameMap[py][px] = 1;
         //adds player to new x,y player position
         gameMap[y][x] = 'player';
-        this.updatePlayer(x, y);
-        this.updateGameMap(gameMap);
+        let player = {x: x, y: y};
+        this.setState({gameMap: gameMap, player: player});
         break;
       // next move is enemy
       case 2:

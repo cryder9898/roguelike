@@ -20,7 +20,6 @@ const MapView = ({gameMap, player, tSize}) => {
   console.log('top',top);
   console.log('left',left,'right',right);
   console.log('bottom',bottom);
-  console.log(gameMap);
   
   // updating window
   for (let r = top; r <= bottom; r++) {
