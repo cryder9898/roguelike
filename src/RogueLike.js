@@ -9,11 +9,18 @@ class RogueLike extends Component {
     this.cols = 80;
     this.rows = 80;
     this.tSize = 12;
+    this.weapons = {
+      stick: 5,
+      knife: 10,
+      gun: 15,
+      laser: 20,
+      bazooka: 25
+    }
     this.state = {
       gameMap: MapGen.createMap(this.rows, this.cols),
       player: {x: 10, y: 10},
       health: 100,
-      attack: 10,
+      attack: 5,
       weapon: 'stick',
       level: 1
     }
@@ -45,16 +52,11 @@ class RogueLike extends Component {
     }
 
     setPiece('player');
-
     for (let x = 0; x <= 10; x++) {
-      // enemy
-      setPiece(2);
-      // health
-      setPiece(3);
-      // weapon
-      setPiece(4);
+      setPiece(2); // enemy
+      setPiece(3); // health
+      setPiece(4); // weapon
     }
-
   }
 
   componentDidMount() {
@@ -71,28 +73,40 @@ class RogueLike extends Component {
     let px = this.state.player.x;
     let py = this.state.player.y;
 
+    const move = (x, y) => {
+      // removes player from present position
+      gameMap[py][px] = 1;
+      //adds player to new x,y player position
+      gameMap[y][x] = 'player';
+      let player = {x: x, y: y};
+      this.setState({gameMap: gameMap, player: player});
+    }
+
     switch (gameMap[y][x]) {
-      // next move is a wall
+      // next move is a floor
       case 1:
-        // removes player from present position
-        gameMap[py][px] = 1;
-        //adds player to new x,y player position
-        gameMap[y][x] = 'player';
-        let player = {x: x, y: y};
-        this.setState({gameMap: gameMap, player: player});
+        move(x, y);
         break;
       // next move is enemy
       case 2:
-        console.log('hit enemy');
+        console.log('**hit enemy!!');
+
         break;
+      // next move is health
       case 3:
-        console.log('hit health');
+        console.log('**hit health!!!');
+        this.setState((prevState) => {
+          return {health: prevState.health + 10};
+        });
+        console.log('health now ', this.state.health);
+        move(x, y);
         break;
+      // next move is weapon
       case 4:
-        console.log('hit weapon');
+        console.log('**hit weapon!!');
+        move(x, y);
         break;
       default: break;
-
     }
   }
 

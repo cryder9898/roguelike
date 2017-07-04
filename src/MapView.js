@@ -16,11 +16,11 @@ const MapView = ({gameMap, player, tSize}) => {
   let right = player.x + windowWidth/2;
   if (right >= 79) {right = 79};
 
-  console.log('player: ', 'row', player.y, 'col', player.x);
-  console.log('top',top);
-  console.log('left',left,'right',right);
-  console.log('bottom',bottom);
-  
+  //console.log('player: ', 'row', player.y, 'col', player.x);
+  // console.log('top',top);
+  // console.log('left',left,'right',right);
+  // console.log('bottom',bottom);
+
   // updating window
   for (let r = top; r <= bottom; r++) {
     let row = [];
