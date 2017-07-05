@@ -37,6 +37,12 @@ const weapons = [
     attack: 25,
   }
 ];
+
+const enemy = {
+  health: 20,
+  attack: 5
+}
+
 const tile = {
   WALL: 0,
   FLOOR: 1,
@@ -44,7 +50,7 @@ const tile = {
   ENEMY: 2,
   HEALTH: 3,
   WEAPON: 4,
-  STAIRS: 5
+  STAIRS: 5,
 };
 
 class RogueLike extends Component {
@@ -93,6 +99,7 @@ class RogueLike extends Component {
     setPiece(tile.STAIRS);
 
     for (let x = 0; x <= 10; x++) {
+      // TODO setup enemies on map
       setPiece(tile.ENEMY);
       setPiece(tile.HEALTH);
     }
@@ -107,7 +114,7 @@ class RogueLike extends Component {
     window.removeEventListener('keydown', this.handleKeyDown);
   }
 
-  movePlayer = (x, y) => {
+  attemptMoveOn = (x, y) => {
     let gameMap = this.state.gameMap;
     let px = this.state.player.x;
     let py = this.state.player.y;
@@ -125,10 +132,12 @@ class RogueLike extends Component {
       case tile.FLOOR:
         move(x, y);
         break;
+
       case tile.ENEMY:
         console.log('**hit enemy!!');
 
         break;
+
       case tile.HEALTH:
         this.setState((prevState) => {
           return {health: prevState.health + 10};
@@ -136,6 +145,7 @@ class RogueLike extends Component {
         console.log('**health now ', this.state.health);
         move(x, y);
         break;
+
       case tile.WEAPON:
         this.setState((prevState)=> {
           console.log('weapon was ',prevState.weapon);
@@ -147,6 +157,11 @@ class RogueLike extends Component {
         console.log('weapon is now ',this.state.weapon);
         move(x, y);
         break;
+
+      case tile.STAIRS:
+        console.log('*** hit stairs');
+        break;
+
       default: break;
     }
   }
@@ -158,19 +173,19 @@ class RogueLike extends Component {
     switch(event.key) {
       case 'ArrowUp':
       case 'w':
-        this.movePlayer(px, py - 1);
+        this.attemptMoveOn(px, py - 1);
         break;
       case 'ArrowDown':
       case 's':
-        this.movePlayer(px, py + 1);
+        this.attemptMoveOn(px, py + 1);
         break;
       case 'ArrowLeft':
       case 'a':
-        this.movePlayer(px - 1, py);
+        this.attemptMoveOn(px - 1, py);
         break;
       case 'ArrowRight':
       case 'd':
-        this.movePlayer(px + 1, py);
+        this.attemptMoveOn(px + 1, py);
         break;
       default:
     }
