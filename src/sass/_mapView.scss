@@ -36,3 +36,8 @@ $cell-size: 10px;
   @extend .tile;
   background-color: orange;
 }
+
+.stairs {
+  @extend .tile;
+  background-color: purple;
+}

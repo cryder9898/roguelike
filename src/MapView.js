@@ -2,8 +2,8 @@ import React from 'react';
 
 const MapView = ({gameMap, player, tSize}) => {
 
-  const windowHeight = 20;
-  const windowWidth = 20;
+  const windowHeight = 30;
+  const windowWidth = 30;
   let window = [];
 
   // corners of the window
@@ -42,6 +42,7 @@ const MapView = ({gameMap, player, tSize}) => {
       case 2: return 'enemy';
       case 3: return 'health';
       case 4: return 'weapon';
+      case 5: return 'stairs';
       default: return 'floor';
     }
   }
