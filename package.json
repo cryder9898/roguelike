@@ -2,12 +2,14 @@
   "name": "roguelike",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://cryder9898.github.io/roguelike",
   "dependencies": {
     "react": "^15.6.1",
     "react-dom": "^15.6.1"
   },
   "devDependencies": {
     "create-react-app-sass": "^1.1.0",
+    "gh-pages": "^1.0.0",
     "node-sass": "^4.5.3",
     "react-scripts": "1.0.8",
     "sass-loader": "^6.0.6",
@@ -17,6 +19,8 @@
     "start": "react-scripts-with-sass start",
     "build": "react-scripts-with-sass build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   }
 }

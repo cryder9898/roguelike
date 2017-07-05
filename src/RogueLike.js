@@ -3,6 +3,15 @@ import TopPanel from './TopPanel';
 import MapView from './MapView';
 import MapGen from './MapGen';
 
+// the gameMap I have created is an Array of rows filled with their columns
+//     |-->
+//     |-->
+//     |-->
+//  y \/-----> x
+//
+// So Initially setting the pieces on the board I use gameMap[y][x] instead of the
+// usual x, y then use the normal x, y coord for location on the map
+
 const cols = 80;
 const rows = 80;
 const tSize = 12;
@@ -49,7 +58,8 @@ class RogueLike extends Component {
       health: 100,
       attack: 5,
       weapon: 'stick',
-      level: 1
+      level: 1,
+      dungeon: 1
     }
   }
 
