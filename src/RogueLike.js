@@ -3,22 +3,32 @@ import TopPanel from './TopPanel';
 import MapView from './MapView';
 import MapGen from './MapGen';
 
+const cols = 80;
+const rows = 80;
+const tSize = 12;
+const weapons = {
+  stick: 5,
+  knife: 10,
+  gun: 15,
+  laser: 20,
+  bazooka: 25
+}
+const tile = {
+  WALL: 0,
+  FLOOR: 1,
+  PLAYER: 'player',
+  ENEMY: 2,
+  HEALTH: 3,
+  WEAPON: 4
+}
+
 class RogueLike extends Component {
   constructor(props) {
     super(props);
-    this.cols = 80;
-    this.rows = 80;
-    this.tSize = 12;
-    this.weapons = {
-      stick: 5,
-      knife: 10,
-      gun: 15,
-      laser: 20,
-      bazooka: 25
-    }
     this.state = {
-      gameMap: MapGen.createMap(this.rows, this.cols),
+      gameMap: MapGen.createMap(rows, cols),
       player: {x: 10, y: 10},
+      enemies: [],
       health: 100,
       attack: 5,
       weapon: 'stick',
@@ -33,8 +43,8 @@ class RogueLike extends Component {
     const setPiece = (type) => {
       let foundPosition = false;
       while (!foundPosition) {
-        let x = Math.floor((Math.random() * this.rows - 1) + 1);
-        let y = Math.floor((Math.random() * this.cols - 1) + 1);
+        let x = Math.floor((Math.random() * rows - 1) + 1);
+        let y = Math.floor((Math.random() * cols - 1) + 1);
 
         // check if position is the floor and set correct x,y coords
         if (gameMap[y][x] === 1) {
@@ -53,9 +63,9 @@ class RogueLike extends Component {
 
     setPiece('player');
     for (let x = 0; x <= 10; x++) {
-      setPiece(2); // enemy
-      setPiece(3); // health
-      setPiece(4); // weapon
+      setPiece(tile.ENEMY);
+      setPiece(tile.HEALTH);
+      setPiece(tile.WEAPON);
     }
   }
 
@@ -84,25 +94,24 @@ class RogueLike extends Component {
 
     switch (gameMap[y][x]) {
       // next move is a floor
-      case 1:
+      case tile.FLOOR:
         move(x, y);
         break;
       // next move is enemy
-      case 2:
+      case tile.ENEMY:
         console.log('**hit enemy!!');
 
         break;
       // next move is health
-      case 3:
-        console.log('**hit health!!!');
+      case tile.HEALTH:
         this.setState((prevState) => {
           return {health: prevState.health + 10};
         });
-        console.log('health now ', this.state.health);
+        console.log('**health now ', this.state.health);
         move(x, y);
         break;
       // next move is weapon
-      case 4:
+      case tile.WEAPON:
         console.log('**hit weapon!!');
         move(x, y);
         break;
@@ -149,7 +158,7 @@ class RogueLike extends Component {
         <MapView
           gameMap={this.state.gameMap}
           player={this.state.player}
-          tSize={this.tSize}
+          tSize={tSize}
         />
       </div>
     );
