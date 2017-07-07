@@ -56,7 +56,7 @@ class Enemy {
 const tile = {
   WALL: 0,
   FLOOR: 1,
-  PLAYER: 'player',
+  HERO: 'hero',
   ENEMY: 2,
   HEALTH: 3,
   WEAPON: 4,
@@ -69,13 +69,15 @@ class RogueLike extends Component {
     this.state = {
       play: null,
       gameMap: MapGen.createMap(rows, cols),
-      player: {x: 10, y: 10},
+      hero: {
+        loc: {x: 10, y: 10},
+        health: 100,
+        attack: 5,
+        weapon: 'stick',
+        level: 1,
+      },
       enemies: {},
       weapons: [],
-      health: 100,
-      attack: 5,
-      weapon: 'stick',
-      level: 1,
       dungeon: 1
     }
   }
@@ -93,9 +95,11 @@ class RogueLike extends Component {
 
         if (gameMap[y][x] === tile.FLOOR) {
 
-          if (type === 'player') {
-            let player = {x: x, y: y};
-            this.setState({player: player});
+          if (type === 'hero') {
+            let hero = this.state.hero
+            let pLoc = {x: x, y: y};
+            hero.loc = pLoc;
+            this.setState({hero: hero});
           }
 
           gameMap[y][x] = type;
@@ -103,12 +107,10 @@ class RogueLike extends Component {
           this.setState({gameMap: gameMap});
           foundPosition = true;
         }
-
-        //return {x, y};
       }
     }
 
-    setPiece('player');
+    setPiece('hero');
     setPiece(tile.WEAPON);
     setPiece(tile.STAIRS);
 
@@ -130,16 +132,18 @@ class RogueLike extends Component {
 
   attemptMoveOn = (x, y) => {
     let gameMap = this.state.gameMap;
-    let px = this.state.player.x;
-    let py = this.state.player.y;
+    let hx = this.state.hero.loc.x;
+    let hy = this.state.hero.loc.y;
 
     const moveTo = (x, y) => {
       // removes player from present position
-      gameMap[py][px] = 1;
+      gameMap[hy][hx] = 1;
       //adds player to new x,y player position
-      gameMap[y][x] = 'player';
-      let player = {x: x, y: y};
-      this.setState({gameMap: gameMap, player: player});
+      gameMap[y][x] = 'hero';
+      let hero = this.state.hero;
+      let hLoc = {x: x, y: y};
+      hero.loc = hLoc;
+      this.setState({gameMap: gameMap, hero: hero});
     }
 
     switch (gameMap[y][x]) {
@@ -164,14 +168,14 @@ class RogueLike extends Component {
         console.log('*attack!!*');
         let enemies = this.state.enemies;
         let enemy = enemies[key];
-        let pHealth = this.state.health;
+        let hero = this.state.hero;
         //player attacks first
-        enemy.health -= this.state.attack;
+        enemy.health -= this.state.hero.attack;
         // enemy attacks
-        pHealth -= enemy.attack;
-        console.log('player',pHealth,'enemy',enemy.health);
+        hero.health -= enemy.attack;
+        console.log('hero',hero.health,'enemy',enemy.health);
 
-        if (pHealth <= 0) {
+        if (hero.health <= 0) {
           console.log('***YOU DIED!****');
         }
 
@@ -180,29 +184,31 @@ class RogueLike extends Component {
           moveTo(x, y);
           enemies[key] = null;
         }
-        
+
         enemies[key] = enemy;
-        this.setState({health: pHealth, enemies: enemies});
+        this.setState({hero: hero, enemies: enemies});
         console.log(this.state.enemies);
         break;
 
       case tile.HEALTH:
         this.setState((prevState) => {
-          return {health: prevState.health + 10};
+          prevState.hero.health += 10;
+          return {hero: prevState.hero};
         });
-        console.log('**health now ', this.state.health);
+        console.log('**health now ', this.state.hero.health);
         moveTo(x, y);
         break;
 
       case tile.WEAPON:
         this.setState((prevState)=> {
-          console.log('weapon was ',prevState.weapon);
+          console.log('weapon was ',prevState.hero.weapon);
           let index = weapons.map((weapon)=> {
             return weapon.name;
-          }).indexOf(prevState.weapon);
-          return {weapon: weapons[index + 1].name};
+          }).indexOf(prevState.hero.weapon);
+          prevState.hero.weapon = weapons[index + 1].name;
+          return {hero: prevState.hero};
         });
-        console.log('weapon is now ',this.state.weapon);
+        console.log('weapon is now ',this.state.hero.weapon);
         moveTo(x, y);
         break;
 
@@ -216,24 +222,24 @@ class RogueLike extends Component {
 
   handleKeyDown = (event) => {
     event.stopPropagation();
-    let px = this.state.player.x;
-    let py = this.state.player.y;
+    let hx = this.state.hero.loc.x;
+    let hy = this.state.hero.loc.y;
     switch(event.key) {
       case 'ArrowUp':
       case 'w':
-        this.attemptMoveOn(px, py - 1);
+        this.attemptMoveOn(hx, hy - 1);
         break;
       case 'ArrowDown':
       case 's':
-        this.attemptMoveOn(px, py + 1);
+        this.attemptMoveOn(hx, hy + 1);
         break;
       case 'ArrowLeft':
       case 'a':
-        this.attemptMoveOn(px - 1, py);
+        this.attemptMoveOn(hx - 1, hy);
         break;
       case 'ArrowRight':
       case 'd':
-        this.attemptMoveOn(px + 1, py);
+        this.attemptMoveOn(hx + 1, hy);
         break;
       default:
     }
@@ -243,16 +249,16 @@ class RogueLike extends Component {
     return (
       <div>
         <TopPanel
-          health={this.state.health}
-          weapon={this.state.weapon}
-          attack={this.state.attack}
-          level={this.state.level}
+          health={this.state.hero.health}
+          weapon={this.state.hero.weapon}
+          attack={this.state.hero.attack}
+          level={this.state.hero.level}
           nxtLvl={100}
           dungeon={1}
         />
         <MapView
           gameMap={this.state.gameMap}
-          player={this.state.player}
+          heroPos={this.state.hero.loc}
           tSize={tSize}
         />
       </div>

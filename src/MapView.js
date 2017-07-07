@@ -1,19 +1,19 @@
 import React from 'react';
 
-const MapView = ({gameMap, player, tSize}) => {
+const MapView = ({gameMap, heroPos, tSize}) => {
 
   const windowHeight = 30;
   const windowWidth = 30;
   let window = [];
 
   // corners of the window
-  let top = player.y - windowHeight/2;
+  let top = heroPos.y - windowHeight/2;
   if (top <= 0) {top = 0};
-  let bottom = player.y + windowHeight/2;
+  let bottom = heroPos.y + windowHeight/2;
   if (bottom >= 79) {bottom = 79};
-  let left = player.x - windowWidth/2;
+  let left = heroPos.x - windowWidth/2;
   if (left <= 0) {left = 0};
-  let right = player.x + windowWidth/2;
+  let right = heroPos.x + windowWidth/2;
   if (right >= 79) {right = 79};
 
   //console.log('player: ', 'row', player.y, 'col', player.x);
@@ -38,7 +38,7 @@ const MapView = ({gameMap, player, tSize}) => {
     switch(tile) {
       case 0: return 'wall';
       case 1: return 'floor';
-      case 'player': return 'player';
+      case 'hero': return 'hero';
       case 2: return 'enemy';
       case 3: return 'health';
       case 4: return 'weapon';
