@@ -38,9 +38,19 @@ const weapons = [
   }
 ];
 
-const enemy = {
-  health: 20,
-  attack: 5
+class Enemy {
+  constructor(health, attack) {
+    this.health = health;
+    this.attack = attack;
+  }
+
+  getHealth() {
+    return this.health;
+  }
+
+  getAttack() {
+    return this.attack;
+  }
 }
 
 const tile = {
@@ -57,9 +67,10 @@ class RogueLike extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      play: null,
       gameMap: MapGen.createMap(rows, cols),
       player: {x: 10, y: 10},
-      enemies: [],
+      enemies: {},
       weapons: [],
       health: 100,
       attack: 5,
@@ -81,16 +92,19 @@ class RogueLike extends Component {
         let y = Math.floor((Math.random() * cols - 1) + 1);
 
         if (gameMap[y][x] === tile.FLOOR) {
-          gameMap[y][x] = type;
 
-          // update player location
           if (type === 'player') {
             let player = {x: x, y: y};
             this.setState({player: player});
           }
+
+          gameMap[y][x] = type;
+
           this.setState({gameMap: gameMap});
           foundPosition = true;
         }
+
+        //return {x, y};
       }
     }
 
@@ -119,7 +133,7 @@ class RogueLike extends Component {
     let px = this.state.player.x;
     let py = this.state.player.y;
 
-    const move = (x, y) => {
+    const moveTo = (x, y) => {
       // removes player from present position
       gameMap[py][px] = 1;
       //adds player to new x,y player position
@@ -130,12 +144,46 @@ class RogueLike extends Component {
 
     switch (gameMap[y][x]) {
       case tile.FLOOR:
-        move(x, y);
+        moveTo(x, y);
         break;
 
       case tile.ENEMY:
-        console.log('**hit enemy!!');
+        // sort-of unique key
+        let key = x.toString()+y.toString();
 
+        if (!this.state.enemies[key]) {
+          // create a new Enemy first
+          console.log('You look new!!')
+          let key = x.toString()+y.toString();
+          let enemies = this.state.enemies;
+          let lvl = this.state.dungeon;
+
+          enemies[key] = new Enemy(20*lvl, 5*lvl);
+          this.setState({enemies: enemies});
+        }
+        console.log('*attack!!*');
+        let enemies = this.state.enemies;
+        let enemy = enemies[key];
+        let pHealth = this.state.health;
+        //player attacks first
+        enemy.health -= this.state.attack;
+        // enemy attacks
+        pHealth -= enemy.attack;
+        console.log('player',pHealth,'enemy',enemy.health);
+
+        if (pHealth <= 0) {
+          console.log('***YOU DIED!****');
+        }
+
+        if (enemy.health <= 0) {
+          console.log('you killed the enemy!!');
+          moveTo(x, y);
+          enemies[key] = null;
+        }
+        
+        enemies[key] = enemy;
+        this.setState({health: pHealth, enemies: enemies});
+        console.log(this.state.enemies);
         break;
 
       case tile.HEALTH:
@@ -143,7 +191,7 @@ class RogueLike extends Component {
           return {health: prevState.health + 10};
         });
         console.log('**health now ', this.state.health);
-        move(x, y);
+        moveTo(x, y);
         break;
 
       case tile.WEAPON:
@@ -155,7 +203,7 @@ class RogueLike extends Component {
           return {weapon: weapons[index + 1].name};
         });
         console.log('weapon is now ',this.state.weapon);
-        move(x, y);
+        moveTo(x, y);
         break;
 
       case tile.STAIRS:
