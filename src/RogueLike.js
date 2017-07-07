@@ -136,14 +136,15 @@ class RogueLike extends Component {
     let hy = this.state.hero.loc.y;
 
     const moveTo = (x, y) => {
-      // removes player from present position
-      gameMap[hy][hx] = 1;
-      //adds player to new x,y player position
-      gameMap[y][x] = 'hero';
-      let hero = this.state.hero;
-      let hLoc = {x: x, y: y};
-      hero.loc = hLoc;
-      this.setState({gameMap: gameMap, hero: hero});
+      this.setState((prevState) => {
+        // removes hero from present position
+        gameMap[hy][hx] = tile.FLOOR;
+        //adds player to new x,y player position
+        gameMap[y][x] = 'hero';
+        let hLoc = {x: x, y: y};
+        prevState.hero.loc = hLoc;
+        return {gameMap: gameMap, hero: prevState.hero};
+      });
     }
 
     switch (gameMap[y][x]) {
@@ -161,8 +162,8 @@ class RogueLike extends Component {
           let key = x.toString()+y.toString();
           let enemies = this.state.enemies;
           let lvl = this.state.dungeon;
-
-          enemies[key] = new Enemy(20*lvl, 5*lvl);
+          // push enemy onto the enemies object
+          enemies[key] = new Enemy(20*lvl, 10*lvl);
           this.setState({enemies: enemies});
         }
         console.log('*attack!!*');
