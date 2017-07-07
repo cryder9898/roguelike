@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import TopPanel from './TopPanel';
 import MapView from './MapView';
 import MapGen from './MapGen';
+import Log from './Log';
 
 // the gameMap I have created is an Array of rows filled with their columns
 //     |-->
@@ -78,7 +79,8 @@ class RogueLike extends Component {
       },
       enemies: {},
       weapons: [],
-      dungeon: 1
+      dungeon: 1,
+      log: ''
     }
   }
 
@@ -166,7 +168,7 @@ class RogueLike extends Component {
           enemies[key] = new Enemy(20*lvl, 10*lvl);
           this.setState({enemies: enemies});
         }
-        console.log('*attack!!*');
+        this.setState({log: 'attack!!'});
         let enemies = this.state.enemies;
         let enemy = enemies[key];
         let hero = this.state.hero;
@@ -177,11 +179,11 @@ class RogueLike extends Component {
         console.log('hero',hero.health,'enemy',enemy.health);
 
         if (hero.health <= 0) {
-          console.log('***YOU DIED!****');
+          this.setState({log: '***YOU DIED!****'});
         }
 
         if (enemy.health <= 0) {
-          console.log('you killed the enemy!!');
+          this.setState({log: 'you killed the enemy!!'});
           moveTo(x, y);
           enemies[key] = null;
         }
@@ -196,25 +198,28 @@ class RogueLike extends Component {
           prevState.hero.health += 10;
           return {hero: prevState.hero};
         });
-        console.log('**health now ', this.state.hero.health);
+        this.setState({log: 'You found Health!'});
         moveTo(x, y);
         break;
 
       case tile.WEAPON:
         this.setState((prevState)=> {
-          console.log('weapon was ',prevState.hero.weapon);
+          // locate in weapon array and grab next one
           let index = weapons.map((weapon)=> {
             return weapon.name;
           }).indexOf(prevState.hero.weapon);
           prevState.hero.weapon = weapons[index + 1].name;
-          return {hero: prevState.hero};
+          prevState.hero.attack = weapons[index + 1].attack;
+          return {
+            log: 'You dropped the '+weapons[index].name+' and picked up the '+this.state.hero.weapon,
+            hero: prevState.hero
+          };
         });
-        console.log('weapon is now ',this.state.hero.weapon);
         moveTo(x, y);
         break;
 
       case tile.STAIRS:
-        console.log('*** hit stairs');
+        this.setState({log: 'Walk down the stairs to the next dungeon!'});
         break;
 
       default: break;
@@ -257,6 +262,7 @@ class RogueLike extends Component {
           nxtLvl={100}
           dungeon={1}
         />
+        <Log log={this.state.log}/>
         <MapView
           gameMap={this.state.gameMap}
           heroPos={this.state.hero.loc}
