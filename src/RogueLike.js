@@ -67,6 +67,10 @@ const tile = {
 class RogueLike extends Component {
   constructor(props) {
     super(props);
+    let gameMaps = [];
+    for (let x = 0; x < 4; x++) {
+      gameMaps.push(MapGen.createMap(rows, cols));
+    }
     this.state = {
       play: null,
       gameMap: MapGen.createMap(rows, cols),
@@ -165,10 +169,9 @@ class RogueLike extends Component {
           let enemies = this.state.enemies;
           let lvl = this.state.dungeon;
           // push enemy onto the enemies object
-          enemies[key] = new Enemy(20*lvl, 10*lvl);
+          enemies[key] = new Enemy(20*lvl, 15*lvl);
           this.setState({enemies: enemies});
         }
-        this.setState({log: 'attack!!'});
         let enemies = this.state.enemies;
         let enemy = enemies[key];
         let hero = this.state.hero;
@@ -176,14 +179,16 @@ class RogueLike extends Component {
         enemy.health -= this.state.hero.attack;
         // enemy attacks
         hero.health -= enemy.attack;
-        console.log('hero',hero.health,'enemy',enemy.health);
+        this.setState({
+          log: 'ATTACK!! Hero: '+hero.health+' Enemy: '+enemy.health
+        });
 
         if (hero.health <= 0) {
           this.setState({log: '***YOU DIED!****'});
         }
 
         if (enemy.health <= 0) {
-          this.setState({log: 'you killed the enemy!!'});
+          this.setState({log: 'You killed the Enemy!!'});
           moveTo(x, y);
           enemies[key] = null;
         }
@@ -194,24 +199,24 @@ class RogueLike extends Component {
         break;
 
       case tile.HEALTH:
+        const health = 10;
         this.setState((prevState) => {
-          prevState.hero.health += 10;
+          prevState.hero.health += health;
           return {hero: prevState.hero};
         });
-        this.setState({log: 'You found Health!'});
+        this.setState({log: 'You found Health! +'+health});
         moveTo(x, y);
         break;
 
       case tile.WEAPON:
         this.setState((prevState)=> {
           // locate in weapon array and grab next one
-          let index = weapons.map((weapon)=> {
-            return weapon.name;
-          }).indexOf(prevState.hero.weapon);
-          prevState.hero.weapon = weapons[index + 1].name;
-          prevState.hero.attack = weapons[index + 1].attack;
+          let lastWeapon = prevState.hero.weapon;
+
+          prevState.hero.weapon = weapons[this.state.dungeon].name;
+          prevState.hero.attack = weapons[this.state.dungeon].attack;
           return {
-            log: 'You dropped the '+weapons[index].name+' and picked up the '+this.state.hero.weapon,
+            log: 'You dropped the ' + lastWeapon + ' and picked up the ' + prevState.hero.weapon,
             hero: prevState.hero
           };
         });
@@ -219,7 +224,15 @@ class RogueLike extends Component {
         break;
 
       case tile.STAIRS:
-        this.setState({log: 'Walk down the stairs to the next dungeon!'});
+        this.setState((prevState)=> {
+          let gameMap = MapGen.createMap(rows, cols);
+          return {
+            log: 'You walked down the stairs to the next dungeon!',
+            gameMap: gameMap,
+            dungeon: prevState.dungeon + 1
+          }
+        });
+        this.initGameMap();
         break;
 
       default: break;
@@ -260,7 +273,7 @@ class RogueLike extends Component {
           attack={this.state.hero.attack}
           level={this.state.hero.level}
           nxtLvl={100}
-          dungeon={1}
+          dungeon={this.state.dungeon}
         />
         <Log log={this.state.log}/>
         <MapView
