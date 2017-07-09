@@ -9,25 +9,25 @@ const MapView = ({gameMap, heroPos, tSize}) => {
 
   // corners of the window
   let top = heroPos.y - windowHeight/2;
-  if (top <= 0) {top = 0};
   let bottom = heroPos.y + windowHeight/2;
-  if (bottom >= 79) {bottom = 79};
   let left = heroPos.x - windowWidth/2;
   let right = heroPos.x + windowWidth/2;
-
-  console.log('hero: ', 'row', heroPos.y, 'col', heroPos.x);
-  console.log('top',top);
-  console.log('left',left,'right',right);
-  console.log('bottom',bottom);
 
   // updating window
   for (let r = top; r <= bottom; r++) {
     let row = [];
     for (let c = left; c <= right; c++) {
-     if (gameMap[r][c] === undefined) {
+      try {
+        if (gameMap[r][c] === undefined) {
+          // handles left and right out of bounds
+          row.push(0);
+        } else {
+          row.push(gameMap[r][c]);
+        }
+      }
+      catch (err) {
+        // handles top and bottom out of bounds
         row.push(0);
-      } else {
-        row.push(gameMap[r][c]);
       }
     }
     window.push(row);
