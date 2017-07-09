@@ -80,7 +80,7 @@ class RogueLike extends Component {
         attack: 5,
         weapon: 'stick',
         level: 1,
-        xp: 1,
+        xp: 0,
       },
       enemies: {},
       weapons: [],
@@ -148,8 +148,7 @@ class RogueLike extends Component {
         gameMap[hy][hx] = tile.FLOOR;
         //adds player to new x,y player position
         gameMap[y][x] = 'hero';
-        let hLoc = {x: x, y: y};
-        prevState.hero.loc = hLoc;
+        prevState.hero.loc = {x: x, y: y};
         return {gameMap: gameMap, hero: prevState.hero};
       });
     }
@@ -177,9 +176,9 @@ class RogueLike extends Component {
         let enemy = enemies[key];
         let hero = this.state.hero;
         //player attacks first
-        enemy.health -= this.state.hero.attack;
+        enemy.health -= hero.attack;
         // enemy attacks
-        hero.health -= enemy.attack;
+        hero.health -= Math.floor(enemy.attack/hero.level);
         this.setState({
           log: 'ATTACK!! Hero: ' + hero.health + ' Enemy: ' + enemy.health
         });
@@ -205,27 +204,38 @@ class RogueLike extends Component {
         }
 
         if (enemy.health <= 0) {
-          console.log('before',enemies);
           delete enemies[key];
-          console.log('after',enemies);
-          this.setState({
-            enemies: enemies,
-            log: 'You killed the Enemy!!'
+          this.setState((prevState)=> {
+            const XP = 15;
+            prevState.hero.xp += XP;
+            if (prevState.hero.xp >= 100) {
+              // if hero has 100 xp he levels up
+              prevState.hero.level++;
+              prevState.hero.attack += 5;
+
+              // reset xp
+              prevState.hero.xp = 0;
+            }
+            return {
+              enemies: enemies,
+              log: 'You killed the Enemy and received ' + XP + ' XP',
+              hero: prevState.hero,
+            }
           });
           moveTo(x, y);
-          console.log(this.state.enemies);
         }
-
-        this.setState({hero: hero, enemies: enemies});
         break;
 
       case tile.HEALTH:
         const health = 10;
+
         this.setState((prevState) => {
           prevState.hero.health += health;
-          return {hero: prevState.hero};
+          return {
+            hero: prevState.hero,
+            log: 'You found Health! +' + health
+          };
         });
-        this.setState({log: 'You found Health! +'+health});
         moveTo(x, y);
         break;
 
