@@ -185,7 +185,23 @@ class RogueLike extends Component {
         });
 
         if (hero.health <= 0) {
-          this.setState({log: '***YOU DIED!****'});
+          this.setState({
+            log: '***YOU DIED!****',
+            play: false,
+            gameMap: MapGen.createMap(rows, cols),
+            hero: {
+              loc: {x: 10, y: 10},
+              health: 100,
+              attack: 5,
+              weapon: 'stick',
+              level: 1,
+              xp: 0,
+            },
+            enemies: {},
+            weapons: [],
+            dungeon: 1,
+          });
+          this.initGameMap();
         }
 
         if (enemy.health <= 0) {
@@ -276,15 +292,19 @@ class RogueLike extends Component {
           weapon={this.state.hero.weapon}
           attack={this.state.hero.attack}
           level={this.state.hero.level}
-          nxtLvl={100}
+          nxtlvl={100 - this.state.hero.xp}
           dungeon={this.state.dungeon}
         />
         <Log log={this.state.log}/>
-        <MapView
-          gameMap={this.state.gameMap}
-          heroPos={this.state.hero.loc}
-          tSize={tSize}
-        />
+        {this.state.play ?
+          <MapView
+            gameMap={this.state.gameMap}
+            heroPos={this.state.hero.loc}
+            tSize={tSize}
+          />
+          :
+          <button onClick={()=>{this.setState({play: true})}}>Play</button>
+        }
       </div>
     );
   }
