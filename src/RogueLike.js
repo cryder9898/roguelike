@@ -170,7 +170,7 @@ class RogueLike extends Component {
           let enemies = this.state.enemies;
           let lvl = this.state.dungeon;
           // push enemy onto the enemies object
-          enemies[key] = new Enemy(20*lvl, 15*lvl);
+          enemies[key] = new Enemy(20*lvl, 10*lvl);
           this.setState({enemies: enemies});
         }
         let enemies = this.state.enemies;
