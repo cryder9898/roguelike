@@ -80,6 +80,7 @@ class RogueLike extends Component {
         attack: 5,
         weapon: 'stick',
         level: 1,
+        xp: 1,
       },
       enemies: {},
       weapons: [],

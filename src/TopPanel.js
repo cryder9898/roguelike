@@ -8,6 +8,7 @@ const TopPanel = ({health, weapon, attack, level, nxtlvl, dungeon}) => {
      <div>Attack: {attack}</div>
      <div>Level: {level}</div>
      <div>Next Level: {nxtlvl}</div>
+     <div>XP to Next Level: {nxtlvl}</div>
      <div>Dungeon: {dungeon}</div>
     </div>
   );
