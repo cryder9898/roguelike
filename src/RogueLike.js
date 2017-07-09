@@ -67,10 +67,10 @@ const tile = {
 class RogueLike extends Component {
   constructor(props) {
     super(props);
-    let gameMaps = [];
-    for (let x = 0; x < 4; x++) {
-      gameMaps.push(MapGen.createMap(rows, cols));
-    }
+    // let gameMaps = [];
+    // for (let x = 0; x < 4; x++) {
+    //   gameMaps.push(MapGen.createMap(rows, cols));
+    // }
     this.state = {
       play: null,
       gameMap: MapGen.createMap(rows, cols),
@@ -181,7 +181,7 @@ class RogueLike extends Component {
         // enemy attacks
         hero.health -= enemy.attack;
         this.setState({
-          log: 'ATTACK!! Hero: '+hero.health+' Enemy: '+enemy.health
+          log: 'ATTACK!! Hero: ' + hero.health + ' Enemy: ' + enemy.health
         });
 
         if (hero.health <= 0) {
@@ -189,14 +189,18 @@ class RogueLike extends Component {
         }
 
         if (enemy.health <= 0) {
-          this.setState({log: 'You killed the Enemy!!'});
+          console.log('before',enemies);
+          delete enemies[key];
+          console.log('after',enemies);
+          this.setState({
+            enemies: enemies,
+            log: 'You killed the Enemy!!'
+          });
           moveTo(x, y);
-          enemies[key] = null;
+          console.log(this.state.enemies);
         }
 
-        enemies[key] = enemy;
         this.setState({hero: hero, enemies: enemies});
-        console.log(this.state.enemies);
         break;
 
       case tile.HEALTH:
@@ -211,9 +215,8 @@ class RogueLike extends Component {
 
       case tile.WEAPON:
         this.setState((prevState)=> {
-          // locate in weapon array and grab next one
           let lastWeapon = prevState.hero.weapon;
-
+          // changes weapon to best weapon based on dungeon
           prevState.hero.weapon = weapons[this.state.dungeon].name;
           prevState.hero.attack = weapons[this.state.dungeon].attack;
           return {
