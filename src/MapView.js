@@ -4,6 +4,7 @@ const MapView = ({gameMap, heroPos, tSize}) => {
 
   const windowHeight = 30;
   const windowWidth = 30;
+  const mapWidth = gameMap.length;
   let window = [];
 
   // corners of the window
@@ -12,20 +13,18 @@ const MapView = ({gameMap, heroPos, tSize}) => {
   let bottom = heroPos.y + windowHeight/2;
   if (bottom >= 79) {bottom = 79};
   let left = heroPos.x - windowWidth/2;
-  if (left <= 0) {left = 0};
   let right = heroPos.x + windowWidth/2;
-  if (right >= 79) {right = 79};
 
-  //console.log('player: ', 'row', player.y, 'col', player.x);
-  // console.log('top',top);
-  // console.log('left',left,'right',right);
-  // console.log('bottom',bottom);
+  console.log('hero: ', 'row', heroPos.y, 'col', heroPos.x);
+  console.log('top',top);
+  console.log('left',left,'right',right);
+  console.log('bottom',bottom);
 
   // updating window
   for (let r = top; r <= bottom; r++) {
     let row = [];
     for (let c = left; c <= right; c++) {
-;      if (gameMap[r][c] === undefined) {
+     if (gameMap[r][c] === undefined) {
         row.push(0);
       } else {
         row.push(gameMap[r][c]);
