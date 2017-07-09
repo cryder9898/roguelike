@@ -105,13 +105,11 @@ class RogueLike extends Component {
 
           if (type === 'hero') {
             let hero = this.state.hero
-            let pLoc = {x: x, y: y};
-            hero.loc = pLoc;
+            hero.loc = {x: x, y: y};
             this.setState({hero: hero});
           }
 
           gameMap[y][x] = type;
-
           this.setState({gameMap: gameMap});
           foundPosition = true;
         }
@@ -167,18 +165,16 @@ class RogueLike extends Component {
       case tile.ENEMY:
         // sort-of unique key
         let key = x.toString()+y.toString();
+        let enemies = this.state.enemies;
 
         if (!this.state.enemies[key]) {
           // create a new Enemy first
-          console.log('You look new!!')
-          let key = x.toString()+y.toString();
-          let enemies = this.state.enemies;
           let lvl = this.state.dungeon;
           // push enemy onto the enemies object
           enemies[key] = new Enemy(20*lvl, 10*lvl);
           this.setState({enemies: enemies});
         }
-        let enemies = this.state.enemies;
+
         let enemy = enemies[key];
         let hero = this.state.hero;
         //player attacks first
@@ -191,7 +187,7 @@ class RogueLike extends Component {
 
         if (hero.health <= 0) {
           this.setState({
-            log: '***YOU DIED!****',
+            log: '*** GAME OVER ***',
             play: false,
             gameMap: MapGen.createMap(rows, cols),
             hero: {
