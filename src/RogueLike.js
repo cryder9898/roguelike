@@ -62,6 +62,7 @@ const tile = {
   HEALTH: 3,
   WEAPON: 4,
   STAIRS: 5,
+  BOSS: 6,
 };
 
 class RogueLike extends Component {
@@ -119,7 +120,12 @@ class RogueLike extends Component {
 
     setPiece('hero');
     setPiece(tile.WEAPON);
-    setPiece(tile.STAIRS);
+
+    if (this.state.dungeon < 4) {
+      setPiece(tile.STAIRS);
+    } else {
+      setPiece(tile.BOSS);
+    }
 
     for (let x = 0; x <= 10; x++) {
       // TODO setup enemies on map

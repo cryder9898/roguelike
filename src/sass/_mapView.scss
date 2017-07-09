@@ -1,4 +1,5 @@
 $cell-size: 10px;
+$bossColor: #800000;
 
 .tile {
   display: inline-block;
@@ -40,4 +41,9 @@ $cell-size: 10px;
 .stairs {
   @extend .tile;
   background-color: purple;
+}
+
+.boss {
+  @extend .tile;
+  background-color: $bossColor;
 }
