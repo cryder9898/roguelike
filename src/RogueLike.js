@@ -218,7 +218,7 @@ class RogueLike extends Component {
           let lastWeapon = prevState.hero.weapon;
           // changes weapon to best weapon based on dungeon
           prevState.hero.weapon = weapons[this.state.dungeon].name;
-          prevState.hero.attack = weapons[this.state.dungeon].attack;
+          prevState.hero.attack += weapons[this.state.dungeon].attack;
           return {
             log: 'You dropped the ' + lastWeapon + ' and picked up the ' + prevState.hero.weapon,
             hero: prevState.hero
