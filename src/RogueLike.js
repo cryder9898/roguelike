@@ -207,28 +207,29 @@ class RogueLike extends Component {
             dungeon: 1,
           });
           this.initGameMap();
-        }
+        } else {
+          if (enemy.health <= 0) {
+            // enemy is defeated
+            delete enemies[key];
+            this.setState((prevState)=> {
+              const XP = 15;
+              prevState.hero.xp += XP;
+              if (prevState.hero.xp >= 100) {
+                // if hero has 100 xp he levels up
+                prevState.hero.level++;
+                prevState.hero.attack += 5;
 
-        if (enemy.health <= 0) {
-          delete enemies[key];
-          this.setState((prevState)=> {
-            const XP = 15;
-            prevState.hero.xp += XP;
-            if (prevState.hero.xp >= 100) {
-              // if hero has 100 xp he levels up
-              prevState.hero.level++;
-              prevState.hero.attack += 5;
-
-              // reset xp
-              prevState.hero.xp = 0;
-            }
-            return {
-              enemies: enemies,
-              log: 'You killed the Enemy and received ' + XP + ' XP',
-              hero: prevState.hero,
-            }
-          });
-          moveTo(x, y);
+                // reset xp
+                prevState.hero.xp = 0;
+              }
+              return {
+                enemies: enemies,
+                log: 'You killed the Enemy and received ' + XP + ' XP',
+                hero: prevState.hero,
+              }
+            });
+            moveTo(x, y);
+          }
         }
         break;
 
