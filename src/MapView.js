@@ -2,8 +2,8 @@ import React from 'react';
 
 const MapView = ({gameMap, heroPos, tSize}) => {
 
-  const windowHeight = 30;
-  const windowWidth = 30;
+  const windowHeight = 60;
+  const windowWidth = 60;
   const mapWidth = gameMap.length;
   let window = [];
 
@@ -42,6 +42,7 @@ const MapView = ({gameMap, heroPos, tSize}) => {
       case 3: return 'health';
       case 4: return 'weapon';
       case 5: return 'stairs';
+      case 6: return 'boss';
       default: return 'floor';
     }
   }
