@@ -20,12 +20,12 @@ $bossColor: #800000;
 
 .floor {
   @extend .tile;
-  background-color: white;
+  background-color: #D1DBBD;
 }
 
 .enemy {
   @extend .tile;
-  background-color: red;
+  background-color: #8E2800;
 }
 
 .health {
@@ -45,5 +45,5 @@ $bossColor: #800000;
 
 .boss {
   @extend .tile;
-  background-color: $bossColor;
+  background-color: red;
 }
