@@ -68,10 +68,6 @@ const tile = {
 class RogueLike extends Component {
   constructor(props) {
     super(props);
-    // let gameMaps = [];
-    // for (let x = 0; x < 4; x++) {
-    //   gameMaps.push(MapGen.createMap(rows, cols));
-    // }
     this.state = {
       play: null,
       gameMap: MapGen.createMap(rows, cols),
@@ -110,8 +106,7 @@ class RogueLike extends Component {
           }
 
           gameMap[y][x] = type;
-          this.setState({gameMap: gameMap});
-          foundPosition = true;
+          return {x: x, y: y};
         }
       }
     }
@@ -122,14 +117,27 @@ class RogueLike extends Component {
     if (this.state.dungeon < 4) {
       setPiece(tile.STAIRS);
     } else {
-      setPiece(tile.BOSS);
+      // create the boss
+      let neighbors = [[-1,0],[-1,-1],[0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1]];
+      let pos = setPiece(tile.BOSS);
+      neighbors = neighbors.filter((loc, index)=> {
+        loc[0] += pos.x;
+        loc[1] += pos.y;
+        return gameMap[loc[1]][loc[0]] === tile.FLOOR;
+      });
+      for (let i = 0; i < 3; i++) {
+        let x = neighbors[i][0];
+        let y = neighbors[i][1];
+        gameMap[y][x] = tile.BOSS;
+      }
     }
 
     for (let x = 0; x <= 10; x++) {
-      // TODO setup enemies on map
       setPiece(tile.ENEMY);
       setPiece(tile.HEALTH);
     }
+
+    this.setState({gameMap: gameMap});
   }
 
   componentDidMount() {
@@ -162,6 +170,8 @@ class RogueLike extends Component {
         moveTo(x, y);
         break;
 
+      case tile.BOSS:
+        console.log('hit boss');
       case tile.ENEMY:
         // sort-of unique key
         let key = x.toString()+y.toString();
@@ -171,7 +181,13 @@ class RogueLike extends Component {
           // create a new Enemy first
           let lvl = this.state.dungeon;
           // push enemy onto the enemies object
-          enemies[key] = new Enemy(20*lvl, 10*lvl);
+          let health;
+          if (gameMap[y][x] === tile.BOSS) {
+            health = 50;
+          } else {
+            health = 20;
+          }
+          enemies[key] = new Enemy(health*lvl, 15*lvl);
           this.setState({enemies: enemies});
         }
 
@@ -208,7 +224,7 @@ class RogueLike extends Component {
             // enemy is defeated
             delete enemies[key];
             this.setState((prevState)=> {
-              const XP = 15;
+              const XP = 20;
               prevState.hero.xp += XP;
               if (prevState.hero.xp >= 100) {
                 // if hero has 100 xp he levels up
