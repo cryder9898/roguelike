@@ -46,9 +46,10 @@ const MapView = ({gameMap, heroPos, tSize}) => {
     }
   }
 
+  // inline style only because of development
   const gridStyle = {
-    'padding': '10px',
-    'backgroundColor': 'blue',
+    'padding': '30px',
+    'backgroundColor': 'grey',
     'margin': 'auto',
     'lineHeight': 0,
     'width': tSize * windowWidth
