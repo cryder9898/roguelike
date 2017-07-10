@@ -2,9 +2,8 @@ import React from 'react';
 
 const MapView = ({gameMap, heroPos, tSize}) => {
 
-  const windowHeight = 60;
-  const windowWidth = 60;
-  const mapWidth = gameMap.length;
+  const windowHeight = 10;
+  const windowWidth = 10;
   let window = [];
 
   // corners of the window

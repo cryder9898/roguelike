@@ -171,7 +171,6 @@ class RogueLike extends Component {
         break;
 
       case tile.BOSS:
-        console.log('hit boss');
       case tile.ENEMY:
         // sort-of unique key
         let key = x.toString()+y.toString();
@@ -332,7 +331,7 @@ class RogueLike extends Component {
             tSize={tSize}
           />
           :
-          <button onClick={()=>{this.setState({play: true})}}>Play</button>
+          <button onClick={()=>{this.setState({play: true, log: ''})}}>Play</button>
         }
       </div>
     );
