@@ -1,5 +1,8 @@
+@import 'type';
 @import 'mapView';
+@import 'panel';
 @import 'log';
+@import 'header';
 
 body {
   margin: 0;
@@ -9,20 +12,4 @@ body {
 
 .App {
   text-align: center;
-}
-
-.App-header {
-  background-color: #222;
-  height: 60px;
-  padding: 20px;
-  color: white;
-}
-
-.top-panel {
-  border-style: solid;
-
-  div {
-    display: inline-block;
-    width: 10em;
-  }
 }
